@@ -12,6 +12,8 @@ library(reshape2)
 
 col1 <- rgb(250, 165, 25, maxColorValue = 255)
 col2 <- rgb(40, 110, 180, maxColorValue = 255)
+col3 <- rgb(240, 99, 34, maxColorValue = 255)
+col4 <- rgb(185, 195, 30, maxColorValue = 255)
 
 #################################################################################################################################################
 ### FIGURE 1
@@ -60,4 +62,37 @@ figure2 <- figure2[order(figure2$prop_inc),]
 barplot(t(figure2[,2:3]), beside = TRUE, col = c(col1, col2), main = NA,
         border = NA, legend.text = c("Low levels of expenditure", "Monetary poverty"),
         names.arg = figure2$geo, cex.names = 0.5,
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
+
+#################################################################################################################################################
+### FIGURE 3
+#################################################################################################################################################
+
+indicators_asset_pov <- get_eurostat("icw_pov_02", time_format = "num")
+indicators_asset_pov <- filter(indicators_asset_pov,
+                               ind_type == "ARP" & duration %in% c("M1", "M3","M6","M12"))
+indicators_asset_pov <- mutate(indicators_asset_pov,
+                               period = as.numeric(substr(duration,2,4)))
+indicators_asset_pov <- indicators_asset_pov[order(indicators_asset_pov$geo, indicators_asset_pov$period),]
+figure3 <- dcast(indicators_asset_pov, geo+time~period, value.var = "values")
+figure3 <- figure3[order(figure3[,3]),]
+
+barplot(t(figure3[,3:6]), beside = TRUE, col = c(col1, col2, col3, col4), main = NA,
+        border = NA, legend.text = c("1 month", "3 months", "6 months", "12 months"),
+        names.arg = figure3$geo, cex.names = 0.7,
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
+
+#################################################################################################################################################
+### FIGURE 4
+#################################################################################################################################################
+
+gini_index <- get_eurostat("icw_sr_05", time_format = "num")
+figure4 <- dcast(gini_index, geo+time~stk_flow, value.var = "values")
+figure4 <- figure4[order(figure4[,5]),]
+
+barplot(t(figure4[,3:6]), beside = TRUE, col = c(col1, col2, col3, col4), main = NA,
+        border = NA, legend.text = c("Income", "Expenditures", "Savings", "Wealth"),
+        names.arg = figure4$geo, cex.names = 0.5,
         args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
