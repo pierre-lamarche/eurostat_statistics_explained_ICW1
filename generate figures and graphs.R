@@ -17,6 +17,7 @@ col2_faded <- rgb(113, 168, 223, maxColorValue = 255)
 col3 <- rgb(240, 99, 34, maxColorValue = 255)
 col3_faded <- rgb(246, 162, 123, maxColorValue = 255)
 col4 <- rgb(185, 195, 30, maxColorValue = 255)
+col5 <- rgb(93, 179, 64, maxColorValue = 255)
 
 #################################################################################################################################################
 ### FIGURE 1
@@ -226,5 +227,22 @@ barplot(t(figure10[,2:7]), beside = TRUE, col = c(col1, col1_faded, col2, col2_f
         main = NA, ylim = c(-60,60),
         border = NA, legend.text = c("One adult","One adult with dependent children","Two adults",
                                      "Two adults with dependent children","Three adults and more","Three adults and more with dependent children"),
-        names.arg = figure9$geo, cex.names = 0.5,
+        names.arg = figure10$geo, cex.names = 0.5,
         args.legend = list(x = "bottomright", bty = "n", border = NA, cex = 0.5))
+
+
+#################################################################################################################################################
+### FIGURE 11
+#################################################################################################################################################
+
+indicators_sr_inc <- get_eurostat("icw_sr_03", time_format = "num")
+figure11 <- filter(indicators_sr_inc,
+                   quantile != "TOTAL")
+figure11 <- dcast(figure11, geo~quantile, value.var = "values")
+
+barplot(t(figure11[,2:6]), beside = TRUE, col = c(col1, col2, col3, col4, col5), 
+        main = NA, ylim = c(-80,80),
+        border = NA, legend.text = c("1st quintile","2nd quintile","3rd quintile","4th quintile","5th quintile"),
+        names.arg = figure11$geo, cex.names = 0.5,
+        args.legend = list(x = "bottomright", bty = "n", border = NA, cex = 0.5))
+
