@@ -134,3 +134,32 @@ barplot(t(figure6[,2:3]), beside = TRUE, col = c(col1, col2), main = NA,
         border = NA, legend.text = c("Median saving rate", "Aggregate saving rate"),
         names.arg = figure6$geo, cex.names = 0.5, ylim = c(-20,50), cex.axis = 0.7,
         args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
+
+#################################################################################################################################################
+### FIGURE 7
+#################################################################################################################################################
+
+indicators_inter <- get_eurostat("icw_pov_01", time_format = "num")
+figure7 <- filter(indicators_inter,
+                  (lev_expn == "LOW" | ind_type == "ARP") & lev_depr == "TOTAL" & workint == "TOTAL" & lev_expn != "TOTAL" & ind_type != "TOTAL")
+
+figure7 <- dcast(figure7, geo+time~lev_expn+ind_type, value.var = "values")
+figure7 <- mutate(figure7,
+                  bar1 = LOW_ARP+LOW_NARP+NLOW_ARP,
+                  bar2 = LOW_ARP+NLOW_ARP,
+                  bar3 = NLOW_ARP)
+figure7 <- figure7[order(figure7$bar1),]
+
+barplot(t(figure7$bar1), col = col3, main = NA,
+        border = NA, space = 1.5, ylim = c(0,40),
+        names.arg = figure6$geo, cex.names = 0.5)
+barplot(t(figure7$bar2), col = col2, main = NA,
+        border = NA, space = 1.5, ylim = c(0,40),
+        add = TRUE)
+barplot(t(figure7$bar3), col = c(col1, col2, col3), main = NA,
+        border = NA, space = 1.5, ylim = c(0,40),
+        add = TRUE,
+        legend.text = c("Only income-poor", "Income-poor and low levels of expenditure",
+                        "Not income-poor, low levels of expenditure"), 
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
