@@ -153,7 +153,7 @@ figure7 <- figure7[order(figure7$bar1),]
 
 barplot(t(figure7$bar1), col = col3, main = NA,
         border = NA, space = 1.5, ylim = c(0,40),
-        names.arg = figure6$geo, cex.names = 0.5)
+        names.arg = figure7$geo, cex.names = 0.5)
 barplot(t(figure7$bar2), col = col2, main = NA,
         border = NA, space = 1.5, ylim = c(0,40),
         add = TRUE)
@@ -162,4 +162,34 @@ barplot(t(figure7$bar3), col = c(col1, col2, col3), main = NA,
         add = TRUE,
         legend.text = c("Only income-poor", "Income-poor and low levels of expenditure",
                         "Not income-poor, low levels of expenditure"), 
+        args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
+
+#################################################################################################################################################
+### FIGURE 8
+#################################################################################################################################################
+
+indicators_inter <- get_eurostat("icw_pov_04", time_format = "num")
+figure8 <- filter(indicators_inter,
+                  (lev_expn == "LOW" | hhtype == "NSAV") & age == "TOTAL" & lev_expn != "TOTAL" & hhtype != "TOTAL")
+figure8 <- dcast(figure8, geo+time~lev_expn+hhtype, value.var = "values")
+figure8 <- mutate(figure8,
+                  bar1 = LOW_NSAV+LOW_SAV+NLOW_NSAV,
+                  bar2 = LOW_NSAV+NLOW_NSAV,
+                  bar3 = NLOW_NSAV)
+
+figure8 <- figure8[order(figure8$bar1),]
+
+barplot(t(figure8$bar1), col = col3, main = NA,
+        border = NA, space = 1.5, ylim = c(0,80),
+        names.arg = figure8$geo, cex.names = 0.5)
+barplot(t(figure8$bar2), col = col2, main = NA,
+        border = NA, space = 1.5, ylim = c(0,40),
+        add = TRUE)
+barplot(t(figure8$bar3), col = c(col1, col2, col3), main = NA,
+        border = NA, space = 1.5, ylim = c(0,40),
+        add = TRUE,
+        legend.text = c("Dissaving households, no low expenditure", 
+                        "Dissaving households with low expenditure",
+                        "Saving households with low expenditure"), 
         args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
