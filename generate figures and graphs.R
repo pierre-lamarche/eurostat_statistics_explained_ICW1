@@ -11,8 +11,11 @@ library(eurostat)
 library(reshape2)
 
 col1 <- rgb(250, 165, 25, maxColorValue = 255)
+col1_faded <- rgb(251, 200, 117, maxColorValue = 255)
 col2 <- rgb(40, 110, 180, maxColorValue = 255)
+col2_faded <- rgb(113, 168, 223, maxColorValue = 255)
 col3 <- rgb(240, 99, 34, maxColorValue = 255)
+col3_faded <- rgb(246, 162, 123, maxColorValue = 255)
 col4 <- rgb(185, 195, 30, maxColorValue = 255)
 
 #################################################################################################################################################
@@ -206,5 +209,22 @@ figure9 <- dcast(figure9, geo~age, value.var = "values")
 
 barplot(t(figure9[,c(6,3:5)]), beside = TRUE, col = c(col1, col2, col3, col4), main = NA,
         border = NA, legend.text = c("Less than 30","Between 30 and 44","Between 45 and 60","60 and more"),
+        names.arg = figure9$geo, cex.names = 0.5, ylim = c(-60,60),
+        args.legend = list(x = "bottomright", bty = "n", border = NA, cex = 0.5))
+
+
+#################################################################################################################################################
+### FIGURE 10
+#################################################################################################################################################
+
+indicators_sr_hhcomp <- get_eurostat("icw_sr_02", time_format = "num")
+figure10 <- filter(indicators_sr_hhcomp,
+                   hhcomp != "TOTAL")
+figure10 <- dcast(figure10, geo~hhcomp, value.var = "values")
+
+barplot(t(figure10[,2:7]), beside = TRUE, col = c(col1, col1_faded, col2, col2_faded, col3, col3_faded), 
+        main = NA, ylim = c(-60,60),
+        border = NA, legend.text = c("One adult","One adult with dependent children","Two adults",
+                                     "Two adults with dependent children","Three adults and more","Three adults and more with dependent children"),
         names.arg = figure9$geo, cex.names = 0.5,
         args.legend = list(x = "bottomright", bty = "n", border = NA, cex = 0.5))
