@@ -193,3 +193,18 @@ barplot(t(figure8$bar3), col = c(col1, col2, col3), main = NA,
                         "Dissaving households with low expenditure",
                         "Saving households with low expenditure"), 
         args.legend = list(x = "topleft", bty = "n", border = NA, cex = 0.5))
+
+
+#################################################################################################################################################
+### FIGURE 9
+#################################################################################################################################################
+
+indicators_sr_age <- get_eurostat("icw_sr_01", time_format = "num")
+figure9 <- filter(indicators_sr_age,
+                  age != "UNK")
+figure9 <- dcast(figure9, geo~age, value.var = "values")
+
+barplot(t(figure9[,c(6,3:5)]), beside = TRUE, col = c(col1, col2, col3, col4), main = NA,
+        border = NA, legend.text = c("Less than 30","Between 30 and 44","Between 45 and 60","60 and more"),
+        names.arg = figure9$geo, cex.names = 0.5,
+        args.legend = list(x = "bottomright", bty = "n", border = NA, cex = 0.5))
